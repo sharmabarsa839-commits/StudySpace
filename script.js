@@ -250,7 +250,8 @@ document.addEventListener("DOMContentLoaded", () => {
       cameraBtn.disabled = true;
       recordBtn.disabled = false;
     } catch (error) {
-      cameraStatus.textContent = "Camera permission denied or unavailable.";
+  cameraStatus.textContent = "Camera error: " + error.name + " - " + error.message;
+  alert(error.name + ": " + error.message);
     }
   };
 
