@@ -28,6 +28,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
       <h2>Subject-wise time</h2>
       <ul id="subjectTimes"></ul>
+
+      <h2>🏆 Your rewards</h2>
+      <p>Coins: 🪙 <span id="coins">0</span></p>
+      <p>Level: <span id="level">Level 1 - Beginner</span></p>
+      <p id="nextLevel"></p>
     </div>
   `;
 
@@ -39,8 +44,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const subjects = ["Physics", "Chemistry", "Biology", "Other"];
   const daily = old.daily || {};
-
-  // Keep older subject totals without assigning them to a date.
   const legacy = old.legacy || old.times || {};
 
   function dateKey(date) {
@@ -75,6 +78,45 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  function getAllTimeSeconds() {
+    const dailySeconds = Object.values(daily).reduce((sum, record) =>
+      sum + subjects.reduce((total, subject) =>
+        total + (record[subject] || 0), 0), 0);
+
+    const legacySeconds = subjects.reduce((sum, subject) =>
+      sum + (legacy[subject] || 0), 0);
+
+    return dailySeconds + legacySeconds;
+  }
+
+  function updateRewards() {
+    const totalHours = Math.floor(getAllTimeSeconds() / 3600);
+    const coins = totalHours * 10;
+
+    const levels = [
+      { name: "Level 1 - Beginner", coins: 0 },
+      { name: "Level 2 - Focused", coins: 200 },
+      { name: "Level 3 - Dedicated", coins: 500 },
+      { name: "Level 4 - Scholar", coins: 1000 },
+      { name: "Level 5 - Mastermind", coins: 2000 }
+    ];
+
+    let currentLevel = levels[0];
+
+    for (const level of levels) {
+      if (coins >= level.coins) currentLevel = level;
+    }
+
+    const nextLevel = levels.find(level => level.coins > coins);
+
+    document.getElementById("coins").textContent = coins;
+    document.getElementById("level").textContent = currentLevel.name;
+
+    document.getElementById("nextLevel").textContent = nextLevel
+      ? `${nextLevel.coins - coins} more coins to reach ${nextLevel.name}`
+      : "You've reached the highest level! 🎉";
+  }
+
   function updateStats() {
     const today = new Date();
     const todayKey = dateKey(today);
@@ -105,6 +147,8 @@ document.addEventListener("DOMContentLoaded", () => {
       subjects.map(subject =>
         `<li>${subject}: ${formatTime(totals[subject])}</li>`
       ).join("");
+
+    updateRewards();
   }
 
   function saveData() {
