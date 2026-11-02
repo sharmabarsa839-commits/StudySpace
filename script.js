@@ -237,6 +237,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let recordedChunks = [];
 
   cameraBtn.onclick = async () => {
+    alert("Camera button clicked!");
     try {
       cameraStream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user" },
