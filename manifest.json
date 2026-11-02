@@ -1,1 +1,10 @@
-
+{
+  "name": "StudySpace",
+  "short_name": "StudySpace",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#17110F",
+  "theme_color": "#241914",
+  "description": "Your personal cozy study space.",
+  "icons": []
+}
