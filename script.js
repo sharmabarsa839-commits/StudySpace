@@ -221,79 +221,36 @@ document.addEventListener("DOMContentLoaded", () => {
     updateTimer();
     saveData();
   };
-
-  updateTimer();
-  updateStats();
-});
-  // Study camera
+  // NEW CAMERA CONTROLLER
   const camera = document.getElementById("cameraPreview");
   const cameraBtn = document.getElementById("cameraBtn");
-  const recordBtn = document.getElementById("recordBtn");
-  const stopRecordBtn = document.getElementById("stopRecordBtn");
   const cameraStatus = document.getElementById("cameraStatus");
 
-  let cameraStream = null;
-  let recorder = null;
-  let recordedChunks = [];
+  cameraBtn.addEventListener("click", async () => {
+    cameraStatus.textContent = "Starting camera...";
 
-  cameraBtn.onclick = async () => {
-    alert("Camera button clicked!");
     try {
-      cameraStream = await navigator.mediaDevices.getUserMedia({
+      if (!navigator.mediaDevices?.getUserMedia) {
+        throw new Error("Camera access is not supported here.");
+      }
+
+      const stream = await navigator.mediaDevices.getUserMedia({
         video: { facingMode: "user" },
         audio: false
       });
 
-      camera.srcObject = cameraStream;
+      camera.srcObject = stream;
       camera.style.display = "block";
-      cameraStatus.textContent = "Camera is on";
-      cameraBtn.textContent = "Camera on";
+      await camera.play();
+
+      cameraStatus.textContent = "Camera is on!";
+      cameraBtn.textContent = "Camera is on";
       cameraBtn.disabled = true;
-      recordBtn.disabled = false;
+
     } catch (error) {
-  cameraStatus.textContent = "Camera error: " + error.name + " - " + error.message;
-  alert(error.name + ": " + error.message);
+      cameraStatus.textContent = error.name + ": " + error.message;
     }
-  };
-
-  recordBtn.onclick = () => {
-    if (!cameraStream) return;
-
-    recordedChunks = [];
-    recorder = new MediaRecorder(cameraStream);
-
-    recorder.ondataavailable = event => {
-      if (event.data.size > 0) {
-        recordedChunks.push(event.data);
-      }
-    };
-
-    recorder.onstop = () => {
-      const videoBlob = new Blob(recordedChunks, {
-        type: recorder.mimeType
-      });
-
-      const videoURL = URL.createObjectURL(videoBlob);
-      const link = document.createElement("a");
-      link.href = videoURL;
-      link.download = "StudySpace-timelapse.webm";
-      link.click();
-
-      setTimeout(() => URL.revokeObjectURL(videoURL), 1000);
-      cameraStatus.textContent = "Time-lapse saved! 🎬";
-    };
-
-    recorder.start();
-    recordBtn.disabled = true;
-    stopRecordBtn.disabled = false;
-    cameraStatus.textContent = "Recording your study session...";
-  };
-
-  stopRecordBtn.onclick = () => {
-    if (recorder && recorder.state === "recording") {
-      recorder.stop();
-    }
-
-    recordBtn.disabled = false;
-    stopRecordBtn.disabled = true;
-  };
+  });
+  updateTimer();
+  updateStats();
+});
