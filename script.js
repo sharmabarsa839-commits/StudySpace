@@ -227,6 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const cameraStatus = document.getElementById("cameraStatus");
 
   cameraBtn.addEventListener("click", async () => {
+    alert("Camera button is responding!");
     cameraStatus.textContent = "Starting camera...";
 
     try {
