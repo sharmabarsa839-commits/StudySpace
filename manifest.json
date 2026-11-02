@@ -2,9 +2,17 @@
   "name": "StudySpace",
   "short_name": "StudySpace",
   "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "background_color": "#17110F",
   "theme_color": "#241914",
   "description": "Your personal cozy study space.",
-  "icons": []
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
 }
