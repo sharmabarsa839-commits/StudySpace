@@ -4,6 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   app.innerHTML = `
     <h1>StudySpace 🌙</h1>
     <p>Your personal study space.</p>
+<div class="quote">“Even the moon takes its time to shine.” 🌙</div>
 
     <div class="study-card">
       <h2>Choose your subject</h2>
